@@ -100,7 +100,16 @@ module tessera_mem_core (
 	assign cs0_write_count_full		= (3'd7==cs0_write_count);
 	assign cs0_write_byte_full		= (2'd3==cs0_write_byte);
 	assign cs0_write_cs			= cs0_write_req                           && (3'd0!=cs0_write_count)                                                       && (3'd7!=cs0_write_count);
-	assign cs0_write_strobe			= cs0_write_req                           && (3'd0!=cs0_write_count) && (3'd1!=cs0_write_count) && (3'd6!=cs0_write_count) && (3'd7!=cs0_write_count);
+	assign cs0_write_strobe			= cs0_write_req                           && (3'd0!=cs0_write_count) && (3'd1!=cs0_write_count) && (3'd6!=cs0_write_count) && (3'd7!=cs0_write_count)
+						&& (
+							( (2'd0==cs0_write_byte) && write_byte[3] )
+							||
+							( (2'd1==cs0_write_byte) && write_byte[2] )
+							||
+							( (2'd2==cs0_write_byte) && write_byte[1] )
+							||
+							( (2'd3==cs0_write_byte) && write_byte[0] )
+						);
 	assign cs0_write_load[0]		= cs0_write_req && (2'd3==cs0_write_byte) && (3'd0==cs0_write_count);
 	assign cs0_write_load[1]		= cs0_write_req && (2'd2==cs0_write_byte) && (3'd0==cs0_write_count);
 	assign cs0_write_load[2]		= cs0_write_req && (2'd1==cs0_write_byte) && (3'd0==cs0_write_count);
@@ -174,7 +183,16 @@ module tessera_mem_core (
 	assign cs1_write_count_full		= (3'd7==cs1_write_count);
 	assign cs1_write_byte_full		= (2'd3==cs1_write_byte);
 	assign cs1_write_cs			= cs1_write_req                           && (3'd0!=cs1_write_count)                                                       && (3'd7!=cs1_write_count);
-	assign cs1_write_strobe			= cs1_write_req                           && (3'd0!=cs1_write_count) && (3'd1!=cs1_write_count) && (3'd6!=cs1_write_count) && (3'd7!=cs1_write_count);
+	assign cs1_write_strobe			= cs1_write_req                           && (3'd0!=cs1_write_count) && (3'd1!=cs1_write_count) && (3'd6!=cs1_write_count) && (3'd7!=cs1_write_count)
+						&& (
+							( (2'd0==cs1_write_byte) && write_byte[3] )
+							||
+							( (2'd1==cs1_write_byte) && write_byte[2] )
+							||
+							( (2'd2==cs1_write_byte) && write_byte[1] )
+							||
+							( (2'd3==cs1_write_byte) && write_byte[0] )
+						);
 	assign cs1_write_load[0]		= cs1_write_req && (2'd3==cs1_write_byte) && (3'd0==cs1_write_count);
 	assign cs1_write_load[1]		= cs1_write_req && (2'd2==cs1_write_byte) && (3'd0==cs1_write_count);
 	assign cs1_write_load[2]		= cs1_write_req && (2'd1==cs1_write_byte) && (3'd0==cs1_write_count);
@@ -242,7 +260,16 @@ module tessera_mem_core (
 	assign cs2_write_count_full		= (3'd7==cs2_write_count);
 	assign cs2_write_byte_full		= (2'd3==cs2_write_byte);
 	assign cs2_write_cs			= cs2_write_req                           && (3'd0!=cs2_write_count)                                                       && (3'd7!=cs2_write_count);
-	assign cs2_write_strobe			= cs2_write_req                           && (3'd0!=cs2_write_count) && (3'd1!=cs2_write_count) && (3'd6!=cs2_write_count) && (3'd7!=cs2_write_count);
+	assign cs2_write_strobe			= cs2_write_req                           && (3'd0!=cs2_write_count) && (3'd1!=cs2_write_count) && (3'd6!=cs2_write_count) && (3'd7!=cs2_write_count)
+						&& (
+							( (2'd0==cs2_write_byte) && write_byte[3] )
+							||
+							( (2'd1==cs2_write_byte) && write_byte[2] )
+							||
+							( (2'd2==cs2_write_byte) && write_byte[1] )
+							||
+							( (2'd3==cs2_write_byte) && write_byte[0] )
+						);
 	assign cs2_write_load[0]		= cs2_write_req && (2'd3==cs2_write_byte) && (3'd0==cs2_write_count);
 	assign cs2_write_load[1]		= cs2_write_req && (2'd2==cs2_write_byte) && (3'd0==cs2_write_count);
 	assign cs2_write_load[2]		= cs2_write_req && (2'd1==cs2_write_byte) && (3'd0==cs2_write_count);
