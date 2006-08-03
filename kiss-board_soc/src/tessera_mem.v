@@ -146,7 +146,16 @@ module tessera_mem_core (
 	assign cs0_read_count_full		= (3'd7==cs0_read_count);
 	assign cs0_read_byte_full		= (2'd3==cs0_read_byte);
 	assign cs0_read_cs			= cs0_read_req                          && (3'd0!=cs0_read_count)                                                     && (3'd7!=cs0_read_count);
-	assign cs0_read_strobe			= cs0_read_req                          && (3'd0!=cs0_read_count) && (3'd1!=cs0_read_count) && (3'd6!=cs0_read_count) && (3'd7!=cs0_read_count);
+	assign cs0_read_strobe			= cs0_read_req                          && (3'd0!=cs0_read_count) && (3'd1!=cs0_read_count) && (3'd6!=cs0_read_count) && (3'd7!=cs0_read_count)
+						&& (
+							( (2'd0==cs0_read_byte) && read_byte[3] )
+							||
+							( (2'd1==cs0_read_byte) && read_byte[2] )
+							||
+							( (2'd2==cs0_read_byte) && read_byte[1] )
+							||
+							( (2'd3==cs0_read_byte) && read_byte[0] )
+						);	
 	assign cs0_read_load[0]			= cs0_read_req && (2'd3==cs0_read_byte) && (3'd7==cs0_read_count); // test 7->6 
 	assign cs0_read_load[1]			= cs0_read_req && (2'd2==cs0_read_byte) && (3'd7==cs0_read_count); // test 7->6
 	assign cs0_read_load[2]			= cs0_read_req && (2'd1==cs0_read_byte) && (3'd7==cs0_read_count); // test 7->6
@@ -219,7 +228,16 @@ module tessera_mem_core (
 	assign cs1_read_count_full		= (3'd7==cs1_read_count);
 	assign cs1_read_byte_full		= (2'd3==cs1_read_byte);
 	assign cs1_read_cs			= cs1_read_req                          && (3'd0!=cs1_read_count)                                                     && (3'd7!=cs1_read_count);
-	assign cs1_read_strobe			= cs1_read_req                          && (3'd0!=cs1_read_count) && (3'd1!=cs1_read_count) && (3'd6!=cs1_read_count) && (3'd7!=cs1_read_count);
+	assign cs1_read_strobe			= cs1_read_req                          && (3'd0!=cs1_read_count) && (3'd1!=cs1_read_count) && (3'd6!=cs1_read_count) && (3'd7!=cs1_read_count)
+						&& (
+							( (2'd0==cs1_read_byte) && read_byte[3] )
+							||
+							( (2'd1==cs1_read_byte) && read_byte[2] )
+							||
+							( (2'd2==cs1_read_byte) && read_byte[1] )
+							||
+							( (2'd3==cs1_read_byte) && read_byte[0] )
+						);	
 	assign cs1_read_load[0]			= cs1_read_req && (2'd3==cs1_read_byte) && (3'd7==cs1_read_count);
 	assign cs1_read_load[1]			= cs1_read_req && (2'd2==cs1_read_byte) && (3'd7==cs1_read_count);
 	assign cs1_read_load[2]			= cs1_read_req && (2'd1==cs1_read_byte) && (3'd7==cs1_read_count);
@@ -296,7 +314,16 @@ module tessera_mem_core (
 	assign cs2_read_count_full		= (3'd7==cs2_read_count);
 	assign cs2_read_byte_full		= (2'd3==cs2_read_byte);
 	assign cs2_read_cs			= cs2_read_req                          && (3'd0!=cs2_read_count)                                                     && (3'd7!=cs2_read_count);
-	assign cs2_read_strobe			= cs2_read_req                          && (3'd0!=cs2_read_count) && (3'd1!=cs2_read_count) && (3'd6!=cs2_read_count) && (3'd7!=cs2_read_count);
+	assign cs2_read_strobe			= cs2_read_req                          && (3'd0!=cs2_read_count) && (3'd1!=cs2_read_count) && (3'd6!=cs2_read_count) && (3'd7!=cs2_read_count)
+						&& (
+							( (2'd0==cs2_read_byte) && read_byte[3] )
+							||
+							( (2'd1==cs2_read_byte) && read_byte[2] )
+							||
+							( (2'd2==cs2_read_byte) && read_byte[1] )
+							||
+							( (2'd3==cs2_read_byte) && read_byte[0] )
+						);	
 	assign cs2_read_load[0]			= cs2_read_req && (2'd3==cs2_read_byte) && (3'd7==cs2_read_count);
 	assign cs2_read_load[1]			= cs2_read_req && (2'd2==cs2_read_byte) && (3'd7==cs2_read_count);
 	assign cs2_read_load[2]			= cs2_read_req && (2'd1==cs2_read_byte) && (3'd7==cs2_read_count);
