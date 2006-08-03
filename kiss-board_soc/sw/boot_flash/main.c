@@ -4,6 +4,8 @@
 #include "syscall.h"
 #include "debug.h"
 
+#include "net.h"
+
 int main(void); // is called from reset.S
 
 /////////////////////////////////////////////
@@ -282,7 +284,7 @@ static void main_job_b_0(MAIN_JOB_B *job_b){
 	}
 	return;
 }
-static void main_job_b_score2(unsigned long int xx,unsigned long int yy,unsigned char *string,unsigned long time){
+static void main_job_b_score2(unsigned long int xx,unsigned long int yy,unsigned char *string,unsigned long int time){
 	long int x;
 	long int y;
 	unsigned char debug_text[DEBUG_TEXT_LEN+1];
@@ -369,6 +371,40 @@ static void main_job_c_0(MAIN_JOB_C *job_c){
 		// pop
 		syscall(SYS_SCREEN_SET_LOCATE_X,x);
 		syscall(SYS_SCREEN_SET_LOCATE_Y,y);
+		//
+		//net_send();
+		//net_recv();
+	}
+	if (0==job_c->time%4096) {
+		unsigned char *p;
+		long int x;
+		long int y;
+		unsigned char data;
+		unsigned char debug_text[DEBUG_TEXT_LEN+1];
+		//
+		x = syscall(SYS_SCREEN_GET_LOCATE_X);
+		y = syscall(SYS_SCREEN_GET_LOCATE_Y);
+		//
+		syscall(SYS_SCREEN_LOCATE,0,480-12-12-12);
+		syscall(SYS_SCREEN_PUT_STRING,"0x04400000:(page0)");
+		REG8(0x04400000) = 0x22; // page0
+		for(p=0x04400000;p<0x04400010;p++){
+			data = REG8(p);
+			debug_convert( (unsigned long int)data , debug_text , 2 , 16 );
+			syscall(SYS_SCREEN_PUT_STRING,debug_text);syscall(SYS_SCREEN_PUT_STRING," ");
+		}
+		syscall(SYS_SCREEN_LOCATE,0,480-12-12);
+		syscall(SYS_SCREEN_PUT_STRING,"0x04400000:(page1)");
+		REG8(0x04400000) = 0x62; // page1
+		for(p=0x04400000;p<0x04400010;p++){
+			data = REG8(p);
+			debug_convert( (unsigned long int)data , debug_text , 2 , 16 );
+			syscall(SYS_SCREEN_PUT_STRING,debug_text);syscall(SYS_SCREEN_PUT_STRING," ");
+		}
+		//		
+		syscall(SYS_SCREEN_SET_LOCATE_X,x);
+		syscall(SYS_SCREEN_SET_LOCATE_Y,y);
+		//
 	}
 	return;
 }
@@ -387,6 +423,7 @@ static void main_loop(void) {
 	main_job_c_init(&c);
 	// vm loop
 	while (1) {
+		net_recv();
 		main_job_a_vm(&a);
 		main_job_b_vm(&b);
 		main_job_c_vm(&c);
@@ -398,42 +435,33 @@ static void main_loop(void) {
 /////////////////////////////////////////////
 extern void *boot_id;
 int main(void){
-//	while (1) {
-//		REG32(0x02000000) = 0x01234567;
-//		REG32(0x02000000);
-//		asm("l.nop");
-//	}
+// rtl8019as init
+	net_init();
 // init syscall(must call one time)
 	syscall(SYS_INIT);
-
-{
-	int i,ii;
-	syscall(SYS_SCREEN_LOCATE,0,0);
-	syscall(SYS_SCREEN_PUT_STRING,"Hello World\n");
-	syscall(SYS_SCREEN_PUT_STRING,"Let's OpenCores!!!\n");
-	for (i=0;i<16384;i++)
-		for (ii=0;ii<16384;ii++) {}
-}
-
-		
-
-	
+// hello world
+	{
+		int i,ii;
+		syscall(SYS_SCREEN_LOCATE,0,0);
+		syscall(SYS_SCREEN_PUT_STRING,"Hello World\n");
+		syscall(SYS_SCREEN_PUT_STRING,"Let's OpenCores!!!\n");
+		for (i=0;i<16384;i++){
+	//		for (ii=0;ii<16384;ii++) {}
+		}
+	}
 //	mtspr( SPR_PCMR( (0) ), SPR_PCMR_CP | SPR_PCMR_IF );
 	
-// print info
+// print version
 	syscall(SYS_VRAM_CLEAR);
-	syscall(SYS_SCREEN_LOCATE,0,480-12-12-12-12-12);
-
+	syscall(SYS_SCREEN_LOCATE,0,480-12-12-12-12-12-12);
 #ifdef BUILD_ID
 	syscall(SYS_SCREEN_PUT_STRING,"BUILD ID:  ");
 	syscall(SYS_SCREEN_PUT_STRING,BUILD_ID);
 	syscall(SYS_SCREEN_PUT_STRING,"\n");
-
 #endif
 	syscall(SYS_SCREEN_PUT_STRING," BOOT ID:  ");
 	syscall(SYS_SCREEN_PUT_STRING,(unsigned char *)&boot_id);
 	syscall(SYS_SCREEN_PUT_STRING,"\n");
-
 // main_loop
 	main_loop();
 	return;
