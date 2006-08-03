@@ -23,7 +23,7 @@ OBJCOPYFLAGS	= --remove-section=.extbss -O binary
 INCLUDES	=
 LIBS		= `or32-uclinux-gcc -print-libgcc-file-name`
 #
-OBJS		= support.o int.o tick.o timer.o uart.o dma.o screen.o font.o image.o vram.o debug.o syscall.o main.o
+OBJS		= support.o int.o tick.o timer.o uart.o dma.o screen.o font.o image.o vram.o debug.o syscall.o net.o main.o
 #
 OBJ1		= reset.noic.nodc.o
 OBJ2		= reset.ic.nodc.o
