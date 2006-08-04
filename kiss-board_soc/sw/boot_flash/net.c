@@ -113,6 +113,8 @@ void net_recv(void){
 	static unsigned long int count = 0;
 	static unsigned long int done = 0;
 	
+	unsigned char head;
+	
 // page0 bnry
 	REG8(NET_BASE+NET_CR)		= NET_CR_PAGE_0 | NET_CR_DMA_ABORT | NET_CR_START;
 	bnry				= REG8(NET_BASE+NET_P0_BNRY);
@@ -120,7 +122,8 @@ void net_recv(void){
 	REG8(NET_BASE+NET_CR)		= NET_CR_PAGE_1 | NET_CR_DMA_ABORT | NET_CR_START;
 	curr				= REG8(NET_BASE+NET_P1_CURR);
 // exist check
-	if(curr==bnry+1) {
+	head = (bnry==0x5f) ? 0x46: bnry + 0x01; 
+	if(curr==head) {
 		REG8(NET_BASE+NET_CR)		= NET_CR_PAGE_0 | NET_CR_DMA_ABORT | NET_CR_START;
 		return;
 	}
@@ -128,7 +131,7 @@ void net_recv(void){
 	REG8(NET_BASE+NET_CR)		= NET_CR_PAGE_0 | NET_CR_DMA_ABORT | NET_CR_START;
 	REG8(NET_BASE+NET_P0_ISR)	= 0xff;
 	REG8(NET_BASE+NET_P0_RSAR0)	= 0x00;
-	REG8(NET_BASE+NET_P0_RSAR1)	= bnry+0x01;
+	REG8(NET_BASE+NET_P0_RSAR1)	= head;
 	REG8(NET_BASE+NET_P0_RBCR0)	= 0x04;
 	REG8(NET_BASE+NET_P0_RBCR1)	= 0x00;
 // page0 DMA do
@@ -146,7 +149,7 @@ void net_recv(void){
 	//len1				= (temp&0x000000ff)>> 0;
 // data check
 	if(0x00==(rsr&0x01)) {
-		REG8(NET_BASE+NET_CR)		= NET_CR_PAGE_0 | NET_CR_DMA_ABORT | NET_CR_START;
+		REG8(NET_BASE+NET_CR)	= NET_CR_PAGE_0 | NET_CR_DMA_ABORT | NET_CR_START;
 		REG8(NET_BASE+NET_P0_BNRY)	= (next==0x46) ? 0x5f: next-0x01;
 		return;
 	}
@@ -160,8 +163,8 @@ void net_recv(void){
 		y = syscall(SYS_SCREEN_GET_LOCATE_Y);
 		//
 		syscall(SYS_SCREEN_LOCATE,0,480-12-12-12-12);
-		syscall(SYS_SCREEN_PUT_STRING,"bnry,curr,rsr,next,len1,len0,count:");
-		debug_convert( (unsigned long int)bnry , debug_text , 2 , 16 );
+		syscall(SYS_SCREEN_PUT_STRING,"head,curr,rsr,next,len1,len0,count:");
+		debug_convert( (unsigned long int)head , debug_text , 2 , 16 );
 		syscall(SYS_SCREEN_PUT_STRING,debug_text);syscall(SYS_SCREEN_PUT_STRING," ");
 		debug_convert( (unsigned long int)curr , debug_text , 2 , 16 );
 		syscall(SYS_SCREEN_PUT_STRING,debug_text);syscall(SYS_SCREEN_PUT_STRING," ");
